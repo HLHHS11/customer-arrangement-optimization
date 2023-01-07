@@ -1,0 +1,49 @@
+# coding: utf-8
+# Your code here!
+
+import numpy as np
+
+chair = np.zeros((12,18))
+
+for j in range(6):
+    for i in range(4):
+        chair[1+3*i,1+3*j] = 3
+        chair[3*i,3*j] = 2
+        chair[3*i,2+3*j] = 2
+        chair[2+3*i,2+3*j] = 2
+        chair[2+3*i,3*j] = 2
+
+tempList = []
+for k in range(12):
+    tempList.append(list(map(lambda x:1 if x==0 else x, chair[k])))
+
+chair_converted = np.array(tempList)
+print(chair_converted)
+
+
+
+
+
+
+print(chair)
+
+chair_converted = np.array(np.array((list(map(lambda x:1 if x==0 else x, chair[0])))))
+print(chair_converted)
+for k in range(1,12):
+    #chair_converted.append(np.array(map(lambda x:1 if x==0 else x, chair[k])))
+    chair_converted = np.append(chair_converted,list(map(lambda x:1 if x==0 else x, chair[k])), axis=0)
+    #chair_converted = np.append(chair_converted, np.array([0,1,0,1]))
+
+print(chair_converted)
+
+
+
+
+
+一応どういう処理の流れか簡単に説明すると
+
+①２層のforループで、二次元配列chairの要素にアクセス
+②１個目のifにより、0をみつけたらそれを1に変える&カウンターを１個ふやす
+③２個目のifがちょっと難しくて、
+もしカウンターの数がしきい値を超えたら、breakで内側のforを抜ける。すると、外側のforに用意してあるbreakにつながるので、外側のforも抜ける。それにより、これ以上置き換え処理を行わなくなる
+もしカウンターの数がしきい値を超えなければ、else: continueというところにつながる。これは外側のループを1個
