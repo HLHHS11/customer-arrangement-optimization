@@ -1,6 +1,7 @@
 import random   #たぶんもうrandomの出番はないけど、一応
 import numpy as np
 #あああああああ
+#いいいいいいい
 
 def generate_chair_array():
     chair = np.zeros((12,18))
