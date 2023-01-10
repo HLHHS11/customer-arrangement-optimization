@@ -33,6 +33,11 @@ random.shuffle(positionOfZeroList)
 for m in range(MAX_NUMBER_OF_1):
     (row, column) = positionOfZeroList[m]
     chair[row, column] = 1
+<<<<<<< HEAD:arrangementOptimization.py
 
 print("変換後の配置図")    
 print(chair)
+=======
+    
+print(chair)
+>>>>>>> origin/master:ArrangementOptimization.py
