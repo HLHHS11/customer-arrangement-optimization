@@ -71,6 +71,119 @@
 }
 
 
+組み合わせの配列を作るためのメモ {
+    1からnまでの数字	から	r個選ぶ組み合わせ
+    ※ゼロスタートじゃなくて1スタートとする
+    function combination (n,r) {
+
+        i = 1を固定 {
+            //1から残りの数m=n-iまでからr-1個とる組み合わせを作る。最後に+iで修正すること
+            n' = n-1
+            r' = r-1
+            combination(n'=n-1, r'=r-1) {
+                i=1を固定{
+                    combination(n'-1=n-2, r'-1=r-2) {
+                        
+                    }
+                }
+                i=2に固定{
+                    combination(n'-2=n-3, r'-2=r-3) {
+
+                    }
+                }
+                ………
+            }
+        }
+        i = 2を固定 {
+            combination(n-2,r-2) {
+
+            }
+        ………
+        }
+    }
+	
+    ちょっと大変なので、5C3の場合を考える。n=5,r=3
+    function combination (n,r,i) {
+        j=1のとき { //コーディング時にはforで実装する予定
+            //n-1_C_r-1を求める問題に変わる。（ただし最後jを忘れないように)
+            combination(n=5, r'=3-1=2, j'=1) {
+                //第一要素はj=1
+                j'=j+1=2のとき {
+                    combination(n=5, r''=r'-1=1, j''=2) {
+                        //第２要素はj'=2
+                        for(j''=j'+1;)
+                        @for j''=j'+1=3のとき {
+                            combination(n=5,r'''=0,j'''=3) {
+                                r'''=0であるから、最後の要素にj'''が入る
+                                return j''=3
+                            }
+                            tempArray[0].push(arrElement=3);
+                        }
+                        @for j''=j'+2=4のとき {
+                            combination(n=5、r'''=0,j'''=4) {
+                                r'''=0より、最後の要素にj'''が入る
+                                return j''=4
+                            }
+                            tempArray[1].push(arrElement=4);
+                        }
+                        @for j''=j'+3=5のとき {
+                            combination(n=5、r'''=0,j'''=5) {
+                                r'''=0より、最後の要素にj'''が入る
+                                return j''=5
+                            }
+                            tempArray[2].push(arrElement=5);
+                        }
+                        for (j''=j'+1; j''<=5; j''++) {
+                            combination(5,0,j'')
+                            tempArray
+                        }
+                        //forが終わってcombinationArrの中身は[ [3],[4],[5] ]になった
+                        r''=1であるから、最後から1個前の要素にj''が入る
+                        うまくやってtempArrayの中身を
+                        [ [2,3],[2,4],[2,5] ]にする
+                        return tempArray
+                    }
+
+                }
+            }
+        }
+    }
+
+
+    初回呼び出しと再帰呼び出し合わせて、r回呼び出される
+    関数のループは、渡されたiを1個増やしたところからスタート
+        rを1個減らし、iをループ内の値にあわせて呼び出し combination(n,r-1,i)
+    function combination(n,r,i) {
+        for(i+1からnまで) {
+            
+        }
+    }
+
+}
+
+
+
+------20230110プログラムから削除したコード------
+
+"""
+#配列arrangementをもとにして座席図を作る方法
+#次のコミットで消す
+seat_position = []
+for k in range(12):
+    for l in range(18):
+        if arrangement[k,l] == 0:
+            seat_position.append([k,l])
+
+#ランダムに0→1置換処理
+MAX_NUMBER_OF_1 = 30    #
+random.shuffle(seat_position)
+for m in range(MAX_NUMBER_OF_1):
+    (row, column) = seat_position[m]
+    arrangement[row, column] = 1
+
+#print("変換後の配置図")    
+#print(arrangement)
+"""
 
 
 ------20230108以前のメモ------

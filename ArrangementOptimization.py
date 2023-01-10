@@ -41,28 +41,8 @@ print(seat_position)
 #print(arrangement==0) 
 
 #配置図を作成し、それに対する不快度・空間の広さを求める
-#for 
 
 
 
 
 
-"""
-#配列arrangementをもとにして座席図を作る方法
-#次のコミットで消す
-seat_position = []
-for k in range(12):
-    for l in range(18):
-        if arrangement[k,l] == 0:
-            seat_position.append([k,l])
-
-#ランダムに0→1置換処理
-MAX_NUMBER_OF_1 = 30    #
-random.shuffle(seat_position)
-for m in range(MAX_NUMBER_OF_1):
-    (row, column) = seat_position[m]
-    arrangement[row, column] = 1
-
-#print("変換後の配置図")    
-#print(arrangement)
-"""
