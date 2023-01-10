@@ -33,6 +33,21 @@ def generate_seat_position_array():
     return seat_position
 
 
+def generate_combination_list(n,r,i=0):
+    if r==1:
+        combination = []
+        for j in range(i+1,n-r+2):
+            combination.append([j])
+        return combination
+    else:
+        combination = []
+        for j in range(i+1,n-r+2):
+            temp_combination = generate_combination_list(n,r-1,j)
+            for k in range(len(temp_combination)):
+                temp_combination[k].insert(0,j)
+            combination += temp_combination
+        return combination
+
 arrangement = generate_arrangement_array()
 seat_position = generate_seat_position_array()
 print("変換前の配置図")
