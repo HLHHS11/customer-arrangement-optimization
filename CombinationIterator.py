@@ -2,14 +2,16 @@ import time
 
 
 def generate_combination_list(n,r,i=0):
-    if r==1:
+    if r>n/2:
+        r = n-r
+    if r==0:
+        return []
+    elif r==1:
         combination = []
         for j in range(i+1,n-r+2):
             combination.append([j])
         return combination
     else:
-        if r>n/2:
-            r = n - r
         combination = []
         for j in range(i+1,n-r+2):
             temp_combination = generate_combination_list(n,r-1,j)
@@ -20,5 +22,5 @@ def generate_combination_list(n,r,i=0):
         
 
 start = time.time()
-print(generate_combination_list(40,37))
+print(generate_combination_list(6,3))
 print(time.time()-start)
