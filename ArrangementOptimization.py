@@ -1,32 +1,30 @@
-import random   #たぶんもうrandomの出番はないけど、一応
 import numpy as np
-import copy
-
+import time
 
 def generate_arrangement_array():
     """カフェ店内の座席の配置表を生成
     注意！：表記は数学の行列の表記と同じように見えるが、
     実際にはlist[][]のように外側から順にインデックスを指定する表記である"""
-    arrangement = np.zeros((6,8))  #8→11
+    arrangement = np.zeros((6,11))  #8→11
     for i in range(2):
-        for j in range(2):  #3
+        for j in range(3):  #3
             arrangement[3*i,3*j] = 2
             arrangement[3*i,2+3*j] = 2
             arrangement[1+3*i,1+3*j] = 3
             arrangement[2+3*i,2+3*j] = 2
             arrangement[2+3*i,3*j] = 2
-        arrangement[3*i,6] = 2  #9
-        arrangement[3*i+1,6] = 2    #9
-        arrangement[2+3*i,6] = 2    #9
-        arrangement[1+3*i,7] = 3   #10
+        arrangement[3*i,9] = 2  #9
+        arrangement[3*i+1,9] = 2    #9
+        arrangement[2+3*i,9] = 2    #9
+        arrangement[1+3*i,10] = 3   #10
     return arrangement
 
 
 def generate_seat_position_array():
-    seat_position = np.empty((20,2))    #20→28
+    seat_position = np.empty((28,2))    #20→28
     counter = 0
     for i in range(2):
-        for j in range(2):  #2→3
+        for j in range(3):  #2→3
             seat_position[counter] = [3*i,1+3*j]
             counter += 1
             seat_position[counter] = [1+3*i,3*j]
@@ -35,9 +33,9 @@ def generate_seat_position_array():
             counter += 1
             seat_position[counter] = [2+3*i,1+3*j]
             counter += 1
-        seat_position[counter] = [3*i,7] #7→10
+        seat_position[counter] = [3*i,10] #7→10
         counter += 1
-        seat_position[counter] = [2+3*i,7] #7→10
+        seat_position[counter] = [2+3*i,10] #7→10
         counter += 1
     return seat_position
 
@@ -60,6 +58,7 @@ def generate_combination_list(n,r,i=0):
         return combination
 
 
+START_TIME = time.time()
 ARRANGEMENT = generate_arrangement_array()
 seat_position = generate_seat_position_array()
 print("変換前の配置図")
@@ -67,8 +66,8 @@ print(ARRANGEMENT)
 print(seat_position)
 
 # 組み合わせの配列を格納した配列（2次元配列）を生成
-n = 20   #6→28
-r = 10   #3→10
+n = 28   #6→28
+r = 14   #3→10
 combination_list = generate_combination_list(n,r)
 arrangement_list = []
 iterator_for_combination_list = 0   #!!最終的には、下のループをitems()メソッドを使って書き直したい。一旦混乱を防ぐためこのまま
@@ -83,7 +82,7 @@ for each_combination in combination_list:   #each_combinationの例[1,3,5,6,7,10
     # 不快度の計算の下準備
     # 各行・各列に着席している人数を配列に
     SIZE_ROW = 6
-    SIZE_COLUMN = 8 #8→11
+    SIZE_COLUMN = 11 #8→11
     total_people_row = np.zeros(SIZE_ROW)     # 各行にいる人の数の配列
     total_people_column = np.zeros(SIZE_COLUMN)   # 各列にいる人の数の配列
     for position in sat_seat_position:  #positionは、サイズ2のndarray(のはず)
@@ -111,16 +110,16 @@ for each_combination in combination_list:   #each_combinationの例[1,3,5,6,7,10
     #for i in range(2):  #2→3    3*i列目に着目
     #    eyesight = SIZE_ROW * (SIZE_COLUMN-1-3*i)
     #    sum_eyesight += eyesight * total_people_column[3*i]
-    #    for j in range(3*i+1, SIZE_COLUMN):  #2→3    3*i列目より右側の人数
+    #    for j in range(3*i+1, SIZE_COLUMN):  #3*i列目より右側の人数
     #        sum_counted_people += total_people_column[j] * total_people_column[3*i]
     #for i in range(2):  #2→3    3*i+2列目に着目
     #    eyesight = SIZE_ROW * (3*i+2)
     #    sum_eyesight += eyesight * total_people_column[3*i+2]
     #    for j in range(0, 3*i+2):
     #        sum_counted_people += total_people_column[j] * total_people_column[3*i+2]
-    for i in range(2):  #2→3    3*i列目と3*i+2行目をまとめて計算
+    for i in range(3):  #2→3    3*i列目と3*i+2行目をまとめて計算
         sum_eyesight += (SIZE_ROW*(SIZE_COLUMN-1-3*i))*total_people_column[3*i] + (SIZE_ROW*(3*i+2))*total_people_column[3*i+2]
-        for j in range(3*i+1, SIZE_COLUMN):  #2→3    3*i列目より右側の人数
+        for j in range(3*i+1, SIZE_COLUMN):  #3*i列目より右側の人数
             sum_counted_people += total_people_column[j] * total_people_column[3*i]
         for j in range(0, 3*i+2):
             sum_counted_people += total_people_column[j] * total_people_column[3*i+2]
@@ -145,3 +144,4 @@ print(ratio_array[optimal_index])
 #print(ratio_array)
 print(len(ratio_array))
 print(copy_arrangement)
+print(f"processing time{time.time()-START_TIME}")
