@@ -65,11 +65,8 @@ seat_position = generate_seat_position_array()
 print("変換前の配置図")
 print(ARRANGEMENT)
 print(seat_position)
-#print(arrangement==0) 
 
-# 配置図を作成し、それに対する不快度・空間の広さを求める
-# 配置図作るだけ作ったけど、たぶんndarrayのでかいやつを使う必要はない
-
+# 組み合わせの配列を格納した配列（2次元配列）を生成
 n = 20   #6→28
 r = 10   #3→10
 combination_list = generate_combination_list(n,r)
@@ -77,54 +74,59 @@ arrangement_list = []
 iterator_for_combination_list = 0   #!!最終的には、下のループをitems()メソッドを使って書き直したい。一旦混乱を防ぐためこのまま
 ratio_array = np.empty(len(combination_list))
 for each_combination in combination_list:   #each_combinationの例[1,3,5,6,7,10]
-    # このブロックは、各組み合わせの計算をする場所
-    #いらない？？copy_arrangement = ARRANGEMENT.copy()
-    sat_seat_position = np.empty([r,2]) #!!あやしい
+    # 各組み合わせに対応する着座表を作成
+    sat_seat_position = np.empty([r,2])
     counter = 0
-    for iterator in each_combination:   #iteratorの例:3
+    for iterator in each_combination:
         sat_seat_position[counter] = np.array(seat_position[iterator-1])
-        #いらない？？copy_arrangement[int(sat_seat_position[0]),int(sat_seat_position[1])] = 1  #おそらくここでのsat_seat_positionの意味は現在の意味と違って一次元配列だ。
         counter += 1
-    #いらない？？arrangement_list.append(copy_arrangement)
-    #!!print(f"sat_seat_position : \n{sat_seat_position}")
-    # ここから、視界に入る人数と空間の広さをカウントする処理に入る。主役はsat_seat_position
-    # 以下の処理は、上のループと一緒に混ぜてしまってもいいかもしれない←やっぱダメ。全体の座席表ができない限り正しく計算できないから
+    # 不快度の計算の下準備
+    # 各行・各列に着席している人数を配列に
     SIZE_ROW = 6
     SIZE_COLUMN = 8 #8→11
-    sum_eyesight = 0   # 視界の広さの合計
-    sum_counted_people = 0   # 視界に入る人数の合計
     total_people_row = np.zeros(SIZE_ROW)     # 各行にいる人の数の配列
     total_people_column = np.zeros(SIZE_COLUMN)   # 各列にいる人の数の配列
     for position in sat_seat_position:  #positionは、サイズ2のndarray(のはず)
         total_people_row[int(position[0])] += 1
         total_people_column[int(position[1])] += 1
-    #!!print(f"各行の人数:{total_people_row}")
-    #!!print(f"各列の人数:{total_people_column}")
-    for i in range(2):  #3*i行目に着目 
-        eyesight = SIZE_COLUMN * (SIZE_ROW-1-3*i)
-        sum_eyesight += eyesight * total_people_row[3*i]    #人数分のeyesightを足す
+    #視界の広さの合計および視界に入る人の数の合計を計算
+    sum_eyesight = 0   # 視界の広さの合計
+    sum_counted_people = 0   # 視界に入る人の数の合計
+    #for i in range(2):  #3*i行目に着目 
+    #    eyesight = SIZE_COLUMN * (SIZE_ROW-1-3*i)
+    #    sum_eyesight += eyesight * total_people_row[3*i]    #人数分のeyesightを足す
+    #    for j in range(3*i+1, SIZE_ROW):    #3*i行目より下側の人数
+    #        sum_counted_people += total_people_row[j] * total_people_row[3*i]   #人数分のcounted_peopleを足す
+    #for i in range(2):  #3*i+2行目に着目。理論上上のループと合わせることができる
+    #    eyesight = SIZE_COLUMN * (3*i+2)
+    #    sum_eyesight += eyesight * total_people_row[3*i+2] 
+    #    for j in range(0, 3*i+2):   #3*i+2行目より上側の人数
+    #        sum_counted_people += total_people_row[j] * total_people_row[3*i+2]
+    for i in range(2):  #高速化のため、3*i行目と3*i+2行目をまとめて計算
+        sum_eyesight += (SIZE_COLUMN*(SIZE_ROW-1-3*i))*total_people_row[3*i] + (SIZE_COLUMN*(3*i+2))*total_people_row[3*i+2]
         for j in range(3*i+1, SIZE_ROW):    #3*i行目より下側の人数
             sum_counted_people += total_people_row[j] * total_people_row[3*i]   #人数分のcounted_peopleを足す
-    for i in range(2):  #3*i+2行目に着目。理論上上のループと合わせることができる
-        eyesight = SIZE_COLUMN * (3*i+2)
-        sum_eyesight += eyesight * total_people_row[3*i+2] 
         for j in range(0, 3*i+2):   #3*i+2行目より上側の人数
             sum_counted_people += total_people_row[j] * total_people_row[3*i+2]
-    for i in range(2):  #2→3    3*i列目に着目
-        eyesight = SIZE_ROW * (SIZE_COLUMN-1-3*i)
-        sum_eyesight += eyesight * total_people_column[3*i]
+    #for i in range(2):  #2→3    3*i列目に着目
+    #    eyesight = SIZE_ROW * (SIZE_COLUMN-1-3*i)
+    #    sum_eyesight += eyesight * total_people_column[3*i]
+    #    for j in range(3*i+1, SIZE_COLUMN):  #2→3    3*i列目より右側の人数
+    #        sum_counted_people += total_people_column[j] * total_people_column[3*i]
+    #for i in range(2):  #2→3    3*i+2列目に着目
+    #    eyesight = SIZE_ROW * (3*i+2)
+    #    sum_eyesight += eyesight * total_people_column[3*i+2]
+    #    for j in range(0, 3*i+2):
+    #        sum_counted_people += total_people_column[j] * total_people_column[3*i+2]
+    for i in range(2):  #2→3    3*i列目と3*i+2行目をまとめて計算
+        sum_eyesight += (SIZE_ROW*(SIZE_COLUMN-1-3*i))*total_people_column[3*i] + (SIZE_ROW*(3*i+2))*total_people_column[3*i+2]
         for j in range(3*i+1, SIZE_COLUMN):  #2→3    3*i列目より右側の人数
             sum_counted_people += total_people_column[j] * total_people_column[3*i]
-    for i in range(2):  #2→3    3*i+2列目に着目
-        eyesight = SIZE_ROW * (3*i+2)
-        sum_eyesight += eyesight * total_people_column[3*i+2]
         for j in range(0, 3*i+2):
             sum_counted_people += total_people_column[j] * total_people_column[3*i+2]
-    #!!print(f"sum_eyesight : {sum_eyesight}")
-    #!!print(f"sum_counted_people : {sum_counted_people}")
-    #!!print(f"イテレータの値は{iterator_for_combination_list}")
     ratio_array[iterator_for_combination_list] = sum_counted_people / sum_eyesight    
     iterator_for_combination_list += 1
+
 optimal_index = ratio_array.argmin()
 max_index = ratio_array.argmax()
 #最適解の組み合わせ
