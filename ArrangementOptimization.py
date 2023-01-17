@@ -91,36 +91,24 @@ for each_combination in combination_list:   #each_combinationの例[1,3,5,6,7,10
     #視界の広さの合計および視界に入る人の数の合計を計算
     sum_eyesight = 0   # 視界の広さの合計
     sum_counted_people = 0   # 視界に入る人の数の合計
-    #for i in range(2):  #3*i行目に着目 
-    #    eyesight = SIZE_COLUMN * (SIZE_ROW-1-3*i)
-    #    sum_eyesight += eyesight * total_people_row[3*i]    #人数分のeyesightを足す
-    #    for j in range(3*i+1, SIZE_ROW):    #3*i行目より下側の人数
-    #        sum_counted_people += total_people_row[j] * total_people_row[3*i]   #人数分のcounted_peopleを足す
-    #for i in range(2):  #3*i+2行目に着目。理論上上のループと合わせることができる
-    #    eyesight = SIZE_COLUMN * (3*i+2)
-    #    sum_eyesight += eyesight * total_people_row[3*i+2] 
-    #    for j in range(0, 3*i+2):   #3*i+2行目より上側の人数
-    #        sum_counted_people += total_people_row[j] * total_people_row[3*i+2]
-    for i in range(2):  #高速化のため、3*i行目と3*i+2行目をまとめて計算
-        sum_eyesight += (SIZE_COLUMN*(SIZE_ROW-1-3*i))*total_people_row[3*i] + (SIZE_COLUMN*(3*i+2))*total_people_row[3*i+2]
+    for i in range(2):  #3*i行目に着目 
+        eyesight = SIZE_COLUMN * (SIZE_ROW-1-3*i)
+        sum_eyesight += eyesight * total_people_row[3*i]    #人数分のeyesightを足す
         for j in range(3*i+1, SIZE_ROW):    #3*i行目より下側の人数
             sum_counted_people += total_people_row[j] * total_people_row[3*i]   #人数分のcounted_peopleを足す
+    for i in range(2):  #3*i+2行目に着目。理論上上のループと合わせることができる
+        eyesight = SIZE_COLUMN * (3*i+2)
+        sum_eyesight += eyesight * total_people_row[3*i+2] 
         for j in range(0, 3*i+2):   #3*i+2行目より上側の人数
             sum_counted_people += total_people_row[j] * total_people_row[3*i+2]
-    #for i in range(2):  #2→3    3*i列目に着目
-    #    eyesight = SIZE_ROW * (SIZE_COLUMN-1-3*i)
-    #    sum_eyesight += eyesight * total_people_column[3*i]
-    #    for j in range(3*i+1, SIZE_COLUMN):  #3*i列目より右側の人数
-    #        sum_counted_people += total_people_column[j] * total_people_column[3*i]
-    #for i in range(2):  #2→3    3*i+2列目に着目
-    #    eyesight = SIZE_ROW * (3*i+2)
-    #    sum_eyesight += eyesight * total_people_column[3*i+2]
-    #    for j in range(0, 3*i+2):
-    #        sum_counted_people += total_people_column[j] * total_people_column[3*i+2]
-    for i in range(3):  #2→3    3*i列目と3*i+2行目をまとめて計算
-        sum_eyesight += (SIZE_ROW*(SIZE_COLUMN-1-3*i))*total_people_column[3*i] + (SIZE_ROW*(3*i+2))*total_people_column[3*i+2]
+    for i in range(2):  #2→3    3*i列目に着目
+        eyesight = SIZE_ROW * (SIZE_COLUMN-1-3*i)
+        sum_eyesight += eyesight * total_people_column[3*i]
         for j in range(3*i+1, SIZE_COLUMN):  #3*i列目より右側の人数
             sum_counted_people += total_people_column[j] * total_people_column[3*i]
+    for i in range(2):  #2→3    3*i+2列目に着目
+        eyesight = SIZE_ROW * (3*i+2)
+        sum_eyesight += eyesight * total_people_column[3*i+2]
         for j in range(0, 3*i+2):
             sum_counted_people += total_people_column[j] * total_people_column[3*i+2]
     ratio_array[iterator_for_combination_list] = sum_counted_people / sum_eyesight    
