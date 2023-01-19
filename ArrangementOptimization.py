@@ -1,5 +1,4 @@
 import numpy as np
-import itertools
 import time
 
 
@@ -41,27 +40,25 @@ def generate_seat_position_array():
     return seat_position
 
 
-def generate_combination_list(r):
-    '''組み合わせのイテレータの２次元リストを生成
-    引数rは座席に座る人の数'''
-    str_combination = list(itertools.combinations("abcdefghijklmnopqrstuvwxyzAB",r))
-    convert_dic = {
-        "a": 0, "b": 1, "c": 2, "d": 3, "e": 4,
-        "f": 5, "g": 6, "h": 7, "i": 8, "j": 9,
-        "k": 10, "l": 11, "m": 12, "n": 13, "o": 14,
-        "p": 15, "q": 16, "r": 17, "s": 18, "t": 19,
-        "u": 20, "v": 21, "w": 22, "x": 23, "y": 24,
-        "z": 25, "A": 26, "B": 27
-    }
-    int_combination = []
-    for each_combination in str_combination:
-        each_combination = list(each_combination)
-        counter = 0
-        for item in each_combination:
-            each_combination[counter] = convert_dic[item]
-            counter += 1
-        int_combination.append(each_combination)
-    return int_combination
+def generate_combination_list(n,r,i=0):
+    if r>n/2:
+        r = n-r
+    if r==0:
+        return []
+    elif r==1:
+        combination = []
+        for j in range(i+1,n-r+2):
+            combination.append([j])
+        return combination
+    else:
+        combination = []
+        for j in range(i+1,n-r+2):
+            temp_combination = generate_combination_list(n,r-1,j)
+            for k in range(len(temp_combination)):
+                #temp_combination[k].insert(0,j)
+                temp_combination[k].append(j)
+            combination += temp_combination
+        return combination
 
 
 # ----プログラム開始----
@@ -69,8 +66,9 @@ START_TIME = time.time()    # 開始時刻を記録
 seat_position = generate_seat_position_array()  # 座席の場所を示す「小さな配置図」
 
 # ----組み合わせの配列を格納した配列（2次元配列）を生成----
+n = 28
 r = 14   
-combination_list = generate_combination_list(r)
+combination_list = generate_combination_list(n,r)
 
 # ----不快度の一覧の配列と、補助の変数を用意----
 ratio_array = np.empty(len(combination_list))   # 不快度の一覧の配列
@@ -82,7 +80,7 @@ for each_combination in combination_list:
     sat_seat_position = np.empty([r,2]) # 「小さな配置図」の中から「人が座る席」だけ選ぶ
     counter = 0
     for value in each_combination:
-        sat_seat_position[counter] = np.array(seat_position[value])
+        sat_seat_position[counter] = np.array(seat_position[value-1])
         counter += 1
     # --不快度の計算の下準備--
     # --各行・各列に着席している人数を配列に--
@@ -129,7 +127,7 @@ max_index = ratio_array.argmax()
 min_seat_position = np.empty([r,2])
 counter = 0
 for value in combination_list[min_index]:   # 「人が座る席」の表を作成するためのループ
-    min_seat_position[counter] = np.array(seat_position[value])
+    min_seat_position[counter] = np.array(seat_position[value-1])
     counter += 1
 ARRANGEMENT = generate_arrangement_array()  #　大きな座席表を作成
 min_arrangement = ARRANGEMENT.copy()    # 「大きな配置図」の初期化
