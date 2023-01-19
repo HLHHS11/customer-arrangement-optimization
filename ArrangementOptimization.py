@@ -41,8 +41,8 @@ def generate_seat_position_array():
 
 
 def generate_combination_list(n,r,i=0):
-    if r>n/2:
-        r = n-r
+    #if r>n/2:
+    #    r = n-r
     if r==0:
         return []
     elif r==1:
