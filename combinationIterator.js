@@ -1,5 +1,5 @@
 function combination (n, r, i = 0) {
-    if (r > n/2) {
+    if (r > n/2) {  // ここ変える必要あり。帰ってくるイテレータがn-r個の組になってしまう
         r = n-r;
     }
     if (r===0) {
